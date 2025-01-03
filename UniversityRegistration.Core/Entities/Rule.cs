@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UniversityRegistration.Core.Entities
 {
@@ -24,6 +19,5 @@ namespace UniversityRegistration.Core.Entities
             Name = name;
             Description = description;
         }
-   }
-
+    }
 }

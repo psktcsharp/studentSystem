@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UniversityRegistration.Core.Interfaces;
 
 namespace UniversityRegistration.Core.Entities
 {
@@ -11,8 +12,7 @@ namespace UniversityRegistration.Core.Entities
     {
         public Guid Id { get; }
         public string Name { get; private set; }
-        public List<Rule> Rules { get; private set; } = new List<Rule>();
-
+        public List<IRule> Rules { get; private set; } = new List<IRule>();
 
         public College(string name)
         {
@@ -24,12 +24,12 @@ namespace UniversityRegistration.Core.Entities
             Name = name;
         }
 
-        public void AddRule(Rule rule)
+        public void AddRule(IRule rule)
         {
             Rules.Add(rule);
         }
 
-        public void RemoveRule(Rule rule)
+        public void RemoveRule(IRule rule)
         {
             Rules.Remove(rule);
         }
