@@ -29,6 +29,9 @@ namespace UniversityRegistration.Desktop
             // Create sample data
             var student = new Student("أحمد محمد", "202012345");
             var course = new Course("مقدمة في البرمجة", 3);
+            var course2 = new Course("مادة اضافية", 16);
+
+
             var college = new College("جامعة طرابلس");
 
             college.AddRule(new MaxCreditHoursRule());
@@ -38,11 +41,14 @@ namespace UniversityRegistration.Desktop
 
             unitOfWork.StudentRepository.Add(student);
             unitOfWork.CourseRepository.Add(course);
+            unitOfWork.CourseRepository.Add(course2);
             unitOfWork.CollegeRepository.Add(college);
 
             // Register student for the course using the mediator
             var registerCommand = new RegisterCourseCommand(student.Id, course.Id);
-            bool isRegistered = await mediator.Send(registerCommand);
+            var registerCommand2 = new RegisterCourseCommand(student.Id, course2.Id);
+            var (isRegistered, errorMessage) = await mediator.Send(registerCommand);
+            var (isRegistered2, errorMessage2) = await mediator.Send(registerCommand2);
 
             string message = "";
             if (isRegistered)
@@ -51,10 +57,16 @@ namespace UniversityRegistration.Desktop
             }
             else
             {
-                message += $"لم يتم تسجيل الطالب {student.Name} في مادة {course.Name}\n";
+                message += $"لم يتم تسجيل الطالب {student.Name} في مادة {course.Name}, Error : {errorMessage}\n";
             }
-
-
+            if (isRegistered2)
+            {
+                message += $"تم تسجيل الطالب {student.Name} في مادة {course2.Name}\n";
+            }
+            else
+            {
+                message += $"لم يتم تسجيل الطالب {student.Name} في مادة {course2.Name}, Error : {errorMessage2}\n";
+            }
 
             // Get the registered courses for the student
             var getCoursesQuery = new GetStudentCoursesQuery(student.Id);
@@ -67,6 +79,8 @@ namespace UniversityRegistration.Desktop
             }
 
             MessageBox.Show(message, "Registration Result");
+
+
         }
     }
 }
