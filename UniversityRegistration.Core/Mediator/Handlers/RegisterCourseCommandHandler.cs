@@ -7,6 +7,9 @@ using UniversityRegistration.Core.Entities;
 using UniversityRegistration.Core.Interfaces;
 using UniversityRegistration.Core.Mediator;
 using UniversityRegistration.Core.Mediator.Commands;
+using UniversityRegistration.Core.Implementations;
+using UniversityRegistration.Core.Rules;
+using System.Linq;
 
 namespace UniversityRegistration.Core.Mediator.Handlers
 {
@@ -25,7 +28,21 @@ namespace UniversityRegistration.Core.Mediator.Handlers
 
             if (student == null || course == null)
             {
-                return false; // or throw an exception
+                return false;
+            }
+            //Get college based on student or any other logic
+            var college = _unitOfWork.CollegeRepository.GetAll().FirstOrDefault();
+            if (college == null)
+            {
+                return false;
+            }
+
+            var ruleService = new CollegeRuleService();
+            var (isValid, errorMessage) = await ruleService.Validate(student, course, college, _unitOfWork);
+            if (!isValid)
+            {
+                System.Console.WriteLine(errorMessage);
+                return false;
             }
 
             var registration = new Registration(student, course);
